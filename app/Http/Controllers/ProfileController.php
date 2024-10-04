@@ -5,9 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use App\Models\User;
+use Illuminate\Support\Facades\Log;
 
 class ProfileController extends Controller
 {
@@ -37,14 +41,60 @@ class ProfileController extends Controller
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
 
-    public function imageUpdate(ProfileUpdateRequest $request): RedirectResponse
+    /**
+     * Update the user's profile picture.
+     */
+    public function pictureUpdate(Request $request): RedirectResponse
     {
         $request->validate([
-            'profile_photo' => 'nullable|image|mimes:jpeg,jpg,png|max:2048'
+            'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+    
+        $user = auth()->user();
+    
+        if ($request->hasFile('profile_photo')) {
+            try {
+                $uploadedFile = $request->file('profile_photo');
+    
+                if (!$uploadedFile->isValid()) {
+                    throw new \Exception('Invalid file uploaded');
+                }
+    
+                if ($user->image) {
+                    Storage::delete($user->image);
+                }
+    
+                $path = $uploadedFile->store('profile_photos');
+    
+                $user->image = $path;
+    
+                $user->save();
+    
+                return redirect()->route('profile.edit')->with('success', 'profile-updated');
+            } catch (\Exception $e) {
+                Log::error($e->getMessage());
+    
+                return redirect()->route('profile.edit')->with('error', 'Failed to update profile picture. Please try again.');
+            }
+        }
+    
+        return redirect()->route('profile.edit')->with('error', 'No file uploaded');
+    }
 
-        $user = $request->user();
+    /**
+     * Serve the user's profile photo.
+     */
+    public function showProfilePhoto(User $user)
+    {
+        if ($user->image) {
+            $path = $user->image;
 
+            if (Storage::exists($path)) {
+                return response()->file(storage_path("app/{$path}"));
+            }
+        }
+
+        return response()->file(public_path('default.jpg'));
     }
 
     /**

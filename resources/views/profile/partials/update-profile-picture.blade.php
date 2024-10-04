@@ -8,9 +8,14 @@
             {{ __('Add or edit your profile picture here') }}
         </p>
     </header>
-    <form method="POST" action="{{ route('profile.update') }}" class="mt-6 space-y-6"> <!-- need to change route -->
+
+    <form id="send-verification" method="post" action="{{ route('verification.send') }}">
         @csrf
-        @method('PUT')
+    </form>
+
+    <form method="POST" action="{{ route('photo.update') }}" class="mt-6 space-y-6" enctype="multipart/form-data"> 
+        @csrf
+        @method('patch')
         <div>
             <x-input-label for="update_password_password_confirmation" :value="__('Profile Photo')" />
             <x-text-input id="update_profile_photo" name="profile_photo" type="file" class="mt-1 block w-full"/>
