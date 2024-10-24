@@ -115,15 +115,14 @@
             <!-- Page Content -->
             <main>
                 <div class="page">
-                    @foreach ($books as $book)
+                    @foreach ($publishers as $publisher)
                         <div class="card">
                             <div class="card-body">
-                            <h5 class="card-title" style="color: white">{{$book->bookTitle}}</h5>
-                            <p class="card-text" style="color: white">{{$book->author}}</p>
-                            <a href="{{route('bookDetail', ['id'=>$book->id])}}" class="btn">Detail</a>
+                            <h5 class="card-title" style="color: white">{{$publisher->publisherName}}</h5>
+                            <a href="{{route('publisherDetail', ['id'=>$publisher->id])}}" class="btn">Detail</a>
                             <div>
-                                <a href="{{route('editBook', ['id'=>$book->id])}}" class="btnU">Update</a>
-                                <form action="{{route('deleteBook', ['id'=>$book->id])}}" method="POST">
+                                <a href="{{route('editPublisher', ['id'=>$publisher->id])}}" class="btnU">Update</a>
+                                <form action="{{route('deletePublisher', ['id'=>$publisher->id])}}" method="POST">
                                     @csrf
                                     @method('DELETE')
                                     <button class="btnD">Delete</a>

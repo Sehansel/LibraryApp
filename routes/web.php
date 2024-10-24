@@ -4,14 +4,13 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\PublisherController;
 
 Route::get('/', function () {
     return redirect()->route('register');
 });
 
-Route::get('/dashboard', [BookController::class, 'dashboard'])->middleware(['auth', 'verified', 'prevent-back-history', 'redirect-if-logged-out'])->name('dashboard');
-
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'verified', 'check-session'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::patch('/profile-photo', [ProfileController::class, 'pictureUpdate'])->name('photo.update');
@@ -21,9 +20,28 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 
-Route::get('admin/dashboard', [HomeController::class, 'index']) -> middleware(['auth', 'admin', 'prevent-back-history', 'redirect-if-logged-out'])->name('adminDashboard');
+Route::middleware(['auth', 'verified', 'prevent-back-history', 'redirect-if-logged-out','check-session'])->group(function(){
+    Route::get('/dashboard', [BookController::class, 'dashboard'])->name('dashboard');
+    Route::get('/book/{id}', [BookController::class, 'book'])->name('bookDetail');
+    Route::post('/buy/book', [BookController::class, 'buyBook'])->name('buyBook');
+    Route::get('/books', [BookController::class, 'ownBook'])->name('ownBook');
+    Route::get('/books/{id}', [BookController::class, 'userBook'])->name('userBookDetail');
+    Route::get('/publisher', [PublisherController::class, 'allPublisher'])->name('allPublisher');
+    Route::get('/publisher/{id}', [PublisherController::class, 'detailPublisher'])->name('publisherDetail');
+});
 
-Route::get('/book/add', [BookController::class, 'addBook'])->middleware(['auth', 'verified', 'prevent-back-history', 'redirect-if-logged-out'])->name('addBook');
-Route::get('/book/{id}', [BookController::class, 'book'])->middleware(['auth', 'verified', 'prevent-back-history', 'redirect-if-logged-out'])->name('bookDetail');
-Route::post('/book/store', [BookController::class, 'storeBook'])->middleware(['auth', 'verified', 'prevent-back-history', 'redirect-if-logged-out'])->name('storeBook');
-Route::post('/book/buy', [BookController::class, 'buyBook'])->middleware(['auth', 'verified', 'prevent-back-history', 'redirect-if-logged-out'])->name('buyBook');
+Route::get('admin/dashboard', [HomeController::class, 'index']) -> middleware(['auth', 'admin', 'prevent-back-history', 'redirect-if-logged-out','check-session'])->name('adminDashboard');
+
+Route::middleware(['auth', 'verified', 'prevent-back-history', 'redirect-if-logged-out','check-session'])->group(function(){
+    Route::get('/add/book', [BookController::class, 'addBook'])->name('addBook');
+    Route::post('/store/book', [BookController::class, 'storeBook'])->name('storeBook');
+    Route::get('/edit/book/{id}', [BookController::class, 'editBook'])->name('editBook');
+    Route::patch('/update/book/{id}', [BookController::class, 'updateBook'])->name('updateBook');
+    Route::delete('/delete/book/{id}', [BookController::class, 'deleteBook'])->name('deleteBook');
+    Route::get('/add/publisher', [PublisherController::class, 'addPublisher'])->name('addPublisher');
+    Route::post('/store/publisher', [PublisherController::class, 'storePublisher'])->name('storePublisher');
+    Route::get('/edit/publisher/{id}', [PublisherController::class, 'editPublisher'])->name('editPublisher');
+    Route::patch('/update/publisher/{id}', [PublisherController::class, 'updatePublisher'])->name('updatePublisher');
+    Route::delete('/delete/publisher/{id}', [PublisherController::class, 'deletePublisher'])->name('deletePublisher');
+});
+

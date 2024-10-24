@@ -17,6 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => \App\Http\Middleware\Admin::class,
             'prevent-back-history' => \App\Http\Middleware\PreventBackHistory::class,
             'redirect-if-logged-out' => \App\Http\Middleware\RedirectIfLoggedOut::class,
+            'check-session' => \App\Http\Middleware\CheckSession::class,
 
         ]);
     })

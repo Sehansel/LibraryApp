@@ -19,6 +19,21 @@
                         {{ __('Add Book') }}
                     </x-nav-link>
                 </div>
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('addPublisher')" :active="request()->routeIs('addPublisher')">
+                        {{ __('Add Publisher') }}
+                    </x-nav-link>
+                </div>
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('allPublisher')" :active="request()->routeIs('allPublisher')">
+                        {{ __('Publishers') }}
+                    </x-nav-link>
+                </div>
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('ownBook')" :active="request()->routeIs('ownBook')">
+                        {{ __('Owned Book') }}
+                    </x-nav-link>
+                </div>
             </div>
 
             <!-- Settings Dropdown -->

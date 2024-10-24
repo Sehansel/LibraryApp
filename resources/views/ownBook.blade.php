@@ -11,22 +11,42 @@
         
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-        <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
         <style>
-            .detail{
-                margin-left: 3rem;
-                color: white;
+            .card {
+                width: 13rem;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                overflow: hidden;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                transition: 0.3s;
+                margin-top: 30px;
+                margin-left: 20px;
+                margin-right: 10px;
             }
-            h1{
-                margin-top: 3rem;
-                margin-bottom: 3rem;
-                font-size: 50px;
+
+            .card:hover {
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
             }
-            h3{
-                margin-bottom: 3rem;
-                font-size: 25px;
+
+            .card-img {
+                width: 100%;
+                height: auto;
             }
+
+            .card-body {
+                padding: 15px;
+            }
+
+            .card-title {
+                font-size: 1.25rem;
+                margin-bottom: 10px;
+            }
+
+            .card-text {
+                font-size: 1rem;
+                color: #666;
+            }
+
             .btn {
                 display: inline-block;
                 padding: 10px 15px;
@@ -41,7 +61,14 @@
             .btn:hover {
                 background-color: #0056b3;
             }
+
+            .page{
+                display: flex;
+                margin: 5px;
+            }
         </style>
+        <!-- Scripts -->
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -57,22 +84,16 @@
 
             <!-- Page Content -->
             <main>
-                <div class="detail">
-                    <h1>{{$book->bookTitle}}</h1>
-                    <h3>By: {{$book->author}}</h3>
-                    <h3>Publisher: {{$book->publisher->publisherName}}</h3>
-                    <h3>Stock: {{$book->stock}}</h3>
-                    <h3>Release Date: {{$book->releaseDate}}</h3>
-                    @if ($book->stock > 0)
-                    <form action="{{route('buyBook')}}" method="POST">
-                        @csrf
-                        <input type="hidden" name="bookId" value="{{ $book->id }}">
-                        <input type="hidden" name="userId" value="{{ Auth::user()->id }}">
-                        <button type="submit" class="btn btn-primary">Buy</button>
-                    </form>
-                    @else
-                        <h3>Out of Stock</h3>
-                    @endif  
+                <div class="page">
+                    @foreach ($books as $book)
+                        <div class="card">
+                            <div class="card-body">
+                            <h5 class="card-title" style="color: white">{{$book->bookTitle}}</h5>
+                            <p class="card-text" style="color: white">{{$book->author}}</p>
+                            <a href="{{route('userBookDetail', ['id'=>$book->id])}}" class="btn">Detail</a>
+                            </div>
+                        </div>
+                    @endforeach
                 </div>
             </main>
         </div>

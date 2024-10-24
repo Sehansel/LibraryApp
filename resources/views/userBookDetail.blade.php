@@ -60,19 +60,8 @@
                 <div class="detail">
                     <h1>{{$book->bookTitle}}</h1>
                     <h3>By: {{$book->author}}</h3>
-                    <h3>Publisher: {{$book->publisher->publisherName}}</h3>
-                    <h3>Stock: {{$book->stock}}</h3>
-                    <h3>Release Date: {{$book->releaseDate}}</h3>
-                    @if ($book->stock > 0)
-                    <form action="{{route('buyBook')}}" method="POST">
-                        @csrf
-                        <input type="hidden" name="bookId" value="{{ $book->id }}">
-                        <input type="hidden" name="userId" value="{{ Auth::user()->id }}">
-                        <button type="submit" class="btn btn-primary">Buy</button>
-                    </form>
-                    @else
-                        <h3>Out of Stock</h3>
-                    @endif  
+                    <h3>Release Date: {{$book->releaseDate}}</h3>  
+                    <h3>Description: {{$book->bookDescription}}</h3>
                 </div>
             </main>
         </div>

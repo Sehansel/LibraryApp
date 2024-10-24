@@ -41,6 +41,40 @@
             .btn:hover {
                 background-color: #0056b3;
             }
+            .card {
+                width: 13rem;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                overflow: hidden;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                transition: 0.3s;
+                margin-top: 30px;
+                margin-left: 20px;
+                margin-right: 10px;
+            }
+
+            .card:hover {
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            }
+
+            .card-img {
+                width: 100%;
+                height: auto;
+            }
+
+            .card-body {
+                padding: 15px;
+            }
+
+            .card-title {
+                font-size: 1.25rem;
+                margin-bottom: 10px;
+            }
+
+            .card-text {
+                font-size: 1rem;
+                color: #666;
+            }
         </style>
     </head>
     <body class="font-sans antialiased">
@@ -58,21 +92,16 @@
             <!-- Page Content -->
             <main>
                 <div class="detail">
-                    <h1>{{$book->bookTitle}}</h1>
-                    <h3>By: {{$book->author}}</h3>
-                    <h3>Publisher: {{$book->publisher->publisherName}}</h3>
-                    <h3>Stock: {{$book->stock}}</h3>
-                    <h3>Release Date: {{$book->releaseDate}}</h3>
-                    @if ($book->stock > 0)
-                    <form action="{{route('buyBook')}}" method="POST">
-                        @csrf
-                        <input type="hidden" name="bookId" value="{{ $book->id }}">
-                        <input type="hidden" name="userId" value="{{ Auth::user()->id }}">
-                        <button type="submit" class="btn btn-primary">Buy</button>
-                    </form>
-                    @else
-                        <h3>Out of Stock</h3>
-                    @endif  
+                    <h1>{{$publisher->publisherName}}</h1>
+                    @foreach ($publisher->books as $book)
+                        <div class="card">
+                            <div class="card-body">
+                            <h5 class="card-title" style="color: white">{{$book->bookTitle}}</h5>
+                            <p class="card-text" style="color: white">{{$book->author}}</p>
+                            <a href="{{route('bookDetail', ['id'=>$book->id])}}" class="btn">Detail</a>
+                            </div>
+                        </div>
+                    @endforeach
                 </div>
             </main>
         </div>
