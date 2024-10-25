@@ -66,8 +66,8 @@
                     @if ($book->stock > 0)
                     <form action="{{route('buyBook')}}" method="POST">
                         @csrf
-                        <input type="hidden" name="bookId" value="{{ $book->id }}">
-                        <input type="hidden" name="userId" value="{{ Auth::user()->id }}">
+                        <input type="hidden" name="bookId" value="{{ Crypt::encrypt($book->id) }}">
+                        <input type="hidden" name="userId" value="{{ Crypt::encrypt(Auth::user()->id) }}">
                         <button type="submit" class="btn btn-primary">Buy</button>
                     </form>
                     @else

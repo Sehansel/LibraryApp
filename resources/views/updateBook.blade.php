@@ -8,7 +8,7 @@
   </head>
   <body>
     <h1>Update Book</h1>
-    <form method="POST" class="m-5" action="{{route('updateBook', ['id' => $book->id])}}">
+    <form method="POST" class="m-5" action="{{route('updateBook', ['id' => Crypt::encrypt($book->id)])}}">
         @csrf
         @method('PATCH')
         <div class="mb-3">
@@ -20,7 +20,9 @@
             <select class="form-select" id="floatingSelect" aria-label="Publisher" name="publisherId">
                 <option selected>{{$book->publisher->publisherName}}</option>
                 @foreach ($publisher as $publisher)
-                  <option value="{{$publisher->id}}">{{$publisher->publisherName}}</option>
+                <option value="{{ $publisher->id }}" {{ $book->publisherId == $publisher->id ? 'selected' : '' }}>
+                  {{ $publisher->publisherName }}
+                </option>
                 @endforeach
             </select>
         </div>

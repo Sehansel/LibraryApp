@@ -119,10 +119,10 @@
                         <div class="card">
                             <div class="card-body">
                             <h5 class="card-title" style="color: white">{{$publisher->publisherName}}</h5>
-                            <a href="{{route('publisherDetail', ['id'=>$publisher->id])}}" class="btn">Detail</a>
+                            <a href="{{route('publisherDetail', ['id'=>Crypt::encrypt($publisher->id)])}}" class="btn">Detail</a>
                             <div>
-                                <a href="{{route('editPublisher', ['id'=>$publisher->id])}}" class="btnU">Update</a>
-                                <form action="{{route('deletePublisher', ['id'=>$publisher->id])}}" method="POST">
+                                <a href="{{route('editPublisher', ['id'=>Crypt::encrypt($publisher->id)])}}" class="btnU">Update</a>
+                                <form action="{{route('deletePublisher', ['id'=>Crypt::encrypt($publisher->id)])}}" method="POST">
                                     @csrf
                                     @method('DELETE')
                                     <button class="btnD">Delete</a>

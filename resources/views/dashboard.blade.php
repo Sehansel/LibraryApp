@@ -120,10 +120,10 @@
                             <div class="card-body">
                             <h5 class="card-title" style="color: white">{{$book->bookTitle}}</h5>
                             <p class="card-text" style="color: white">{{$book->author}}</p>
-                            <a href="{{route('bookDetail', ['id'=>$book->id])}}" class="btn">Detail</a>
+                            <a href="{{route('bookDetail', ['id'=>Crypt::encrypt($book->id)])}}" class="btn">Detail</a>
                             <div>
-                                <a href="{{route('editBook', ['id'=>$book->id])}}" class="btnU">Update</a>
-                                <form action="{{route('deleteBook', ['id'=>$book->id])}}" method="POST">
+                                <a href="{{route('editBook', ['id'=>Crypt::encrypt($book->id)])}}" class="btnU">Update</a>
+                                <form action="{{route('deleteBook', ['id'=>Crypt::encrypt($book->id)])}}" method="POST">
                                     @csrf
                                     @method('DELETE')
                                     <button class="btnD">Delete</a>

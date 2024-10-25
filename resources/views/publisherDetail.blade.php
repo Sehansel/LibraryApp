@@ -98,7 +98,7 @@
                             <div class="card-body">
                             <h5 class="card-title" style="color: white">{{$book->bookTitle}}</h5>
                             <p class="card-text" style="color: white">{{$book->author}}</p>
-                            <a href="{{route('bookDetail', ['id'=>$book->id])}}" class="btn">Detail</a>
+                            <a href="{{route('bookDetail', ['id'=>Crypt::encrypt($book->id)])}}" class="btn">Detail</a>
                             </div>
                         </div>
                     @endforeach

@@ -7,21 +7,29 @@ use App\Models\Publisher;
 use App\Models\Purchase;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class BookController extends Controller
 {
     //
     public function addBook(){
+        if(!Gate::allows('admin')){
+            abort(403);
+        }
         $publisher = Publisher::all();
 
         return view('addBook')->with('publishers', $publisher);
     }
 
     public function storeBook(Request $request){
-
+        if(!Gate::allows('admin')){
+            abort(403);
+        }
         $validateData = $request->validate([
             'bookTitle' => 'required|string|max:255',
-            'publisher' => 'required',
+            'publisher' => 'required|integer',
             'author' => 'required|string|max:255',
             'stock' => 'required|integer|min:1',
             'bookDescription' => 'required|string',
@@ -56,27 +64,37 @@ class BookController extends Controller
     }
 
     public function book($id){
-        $book = Book::findOrFail($id);
+        try {
+            $decrypt = Crypt::decrypt($id);
 
-        return view('bookDetail')->with('book', $book);
+            $book = Book::findOrFail($decrypt);
+
+            return view('bookDetail')->with('book', $book);
+        } catch (Illuminate\Contracts\Encryption\DecryptException $e) {
+            return redirect('/dashboard');
+        }
     }
 
     public function buyBook(Request $request){
-        $book = Book::find($request->bookId);
-
-        if($book && $book->stock > 0){
-            $book->stock -= 1;
-            $book->save();
-
-            $purchase = new Purchase();
-            $purchase->userId = $request->userId;
-            $purchase->bookId = $request->bookId;
-            $purchase->save();
-
-            return redirect('/dashboard')->with('success', 'Book purchased successfully');
+        try {
+            $decryptBookId = Crypt::decrypt($request->bookId);
+            $decryptUserId = Crypt::decrypt($request->userId);
+            $book = Book::find($decryptBookId);
+            if($book && $book->stock > 0){
+                $book->stock -= 1;
+                $book->save();
+    
+                $purchase = new Purchase();
+                $purchase->userId = $decryptUserId;
+                $purchase->bookId = $decryptBookId;
+                $purchase->save();
+    
+                return redirect('/dashboard')->with('success', 'Book purchased successfully');
+            }
+            return redirect('/dashboard')->with('error', 'Book not found or out of stock');
+        } catch (Illuminate\Contracts\Encryption\DecryptException $e) {
+            return redirect('/dashboard');
         }
-
-        return redirect('/dashboard')->with('error', 'Book not found or out of stock');
     }
 
     public function ownBook(){
@@ -90,44 +108,78 @@ class BookController extends Controller
     }
 
     public function userBook($id){
-        $book = Book::findOrFail($id);
+        try {
+            $decrypt = Crypt::decrypt($id);
 
-        return view('userBookDetail')->with('book', $book);
+            $book = Book::findOrFail($decrypt);
+
+            return view('userBookDetail')->with('book', $book);
+        } catch (Illuminate\Contracts\Encryption\DecryptException $e) {
+            return redirect('/dashboard');
+        }
     }
 
     public function editBook($id){
-        $book = Book::findOrFail($id);
-        $publisher = Publisher::all();
+        if(!Gate::allows('admin')){
+            abort(403);
+        }
+        try {
+            $decrypt = Crypt::decrypt($id);
 
-        return view('updateBook', ['publisher' => $publisher, 'book' => $book]);
+            $book = Book::findOrFail($decrypt);
+
+            $publisher = Publisher::all();
+
+            return view('updateBook', ['publisher' => $publisher, 'book' => $book]);
+        } catch (Illuminate\Contracts\Encryption\DecryptException $e) {
+            return redirect('/dashboard');
+        }
     }
 
     public function updateBook($id, Request $request){
-
-        $validateData = $request->validate([
+        if(!Gate::allows('admin')){
+            abort(403);
+        }
+        try {
+            $decrypt = Crypt::decrypt($id);
+            
+            $validateData = $request->validate([
             'bookTitle' => 'required|string|max:255',
-            'publisherId' => 'required',
+            'publisherId' => 'required|integer',
             'author' => 'required|string|max:255',
             'stock' => 'required|integer|min:1',
             'bookDescription' => 'required|string',
             'releaseDate' => 'required|date'
-        ]);
+            ]);
 
-        $book = Book::findOrFail($id)->update([
+            $book = Book::findOrFail($decrypt)->update([
             'bookTitle' => $validateData['bookTitle'],
             'publisherId' => $validateData['publisherId'],
             'author' => $validateData['author'],
             'stock' => $validateData['stock'],
             'bookDescription' => $validateData['bookDescription'],
             'releaseDate' => $validateData['releaseDate']
-        ]);
+            ]);
 
         return redirect('/dashboard');
+        } catch (Illuminate\Contracts\Encryption\DecryptException $e) {
+            return redirect('/dashboard');
+        }
+
     }
 
     public function deleteBook($id){
-        Book::destroy($id);
+        if(!Gate::allows('admin')){
+            abort(403);
+        }
+        try {
+            $decrypt = Crypt::decrypt($id);
+            Book::destroy($decrypt);
 
-        return redirect('/dashboard');
+            return redirect('/dashboard');
+        } catch (Illuminate\Contracts\Encryption\DecryptException $e) {
+            return redirect('/dashboard');
+        }
+
     }
 }

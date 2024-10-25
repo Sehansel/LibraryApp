@@ -14,6 +14,7 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
                 </div>
+                @can('admin')
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('addBook')" :active="request()->routeIs('addBook')">
                         {{ __('Add Book') }}
@@ -24,6 +25,7 @@
                         {{ __('Add Publisher') }}
                     </x-nav-link>
                 </div>
+                @endcan
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('allPublisher')" :active="request()->routeIs('allPublisher')">
                         {{ __('Publishers') }}

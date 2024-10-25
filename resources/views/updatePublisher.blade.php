@@ -8,7 +8,7 @@
   </head>
   <body>
     <h1>Update Book</h1>
-    <form method="POST" class="m-5" action="{{route('updatePublisher', ['id' => $publisher->id])}}">
+    <form method="POST" class="m-5" action="{{route('updatePublisher', ['id' => Crypt::encrypt($publisher->id)])}}">
         @csrf
         @method('PATCH')
         <div class="mb-3">

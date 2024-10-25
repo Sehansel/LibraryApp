@@ -6,15 +6,22 @@ use App\Models\Publisher;
 use App\Models\Book;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 
 class PublisherController extends Controller
 {
     //
     public function addPublisher(){
+        if(!Gate::allows('admin')){
+            abort(403);
+        }
         return view('addPublisher');
     }
 
     public function storePublisher(Request $request){
+        if(!Gate::allows('admin')){
+            abort(403);
+        }
         $validateData = $request->validate([
             'publisherName' => 'required|string|max:255'
         ]);
@@ -33,32 +40,66 @@ class PublisherController extends Controller
     }
 
     public function detailPublisher($id){
-        $publisher = Publisher::findOrFail($id);
+        try {
+            $decrypt = Crypt::decrypt($id);
 
-        return view('publisherDetail')->with('publisher', $publisher);
+            $publisher = Publisher::findOrFail($decrypt);
+
+            return view('publisherDetail')->with('publisher', $publisher);
+        } catch (Illuminate\Contracts\Encryption\DecryptException $e) {
+            return redirect('/dashboard');
+        }
     }
 
     public function editPublisher($id){
-        $publisher = Publisher::findOrFail($id);
+        if(!Gate::allows('admin')){
+            abort(403);
+        }
+        try {
+            $decrypt = Crypt::decrypt($id);
 
-        return view('updatePublisher')->with('publisher', $publisher);
+            $publisher = Publisher::findOrFail($decrypt);
+
+            return view('updatePublisher')->with('publisher', $publisher);
+        } catch (Illuminate\Contracts\Encryption\DecryptException $e) {
+            return redirect('/dashboard');  
+        }
     }
 
     public function updatePublisher($id, Request $request){
-        $validateData = $request->validate([
-            'publisherName' => 'required|string|max:255'
-        ]);
+        if(!Gate::allows('admin')){
+            abort(403);
+        }
+        try {
+            $decrypt = Crypt::decrypt($id);
 
-        $publisher = Publisher::findOrFail($id)->update([
-            'publisherName' => $validateData['publisherName']
-        ]);
-
-        return redirect(route('allPublisher'));
+            $validateData = $request->validate([
+                'publisherName' => 'required|string|max:255'
+            ]);
+    
+            $publisher = Publisher::findOrFail($decrypt)->update([
+                'publisherName' => $validateData['publisherName']
+            ]);
+    
+            return redirect(route('allPublisher'));
+        } catch (Illuminate\Contracts\Encryption\DecryptException $e) {
+            return redirect('/dashboard');
+        }
     }
 
     public function deletePublisher($id){
-        Publisher::destroy($id);
+        if(!Gate::allows('admin')){
+            abort(403);
+        }
+        try {
+            $decrypt = Crypt::decrypt($id);
 
-        return redirect(route('allPublisher'));
+            Publisher::destroy($decrypt);
+
+            return redirect(route('allPublisher'));
+        } catch (Illuminate\Contracts\Encryption\DecryptException $e) {
+            return redirect('/dashboard');
+        }
+        
     }
 }

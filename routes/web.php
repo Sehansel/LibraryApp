@@ -32,7 +32,7 @@ Route::middleware(['auth', 'verified', 'prevent-back-history', 'redirect-if-logg
 
 Route::get('admin/dashboard', [HomeController::class, 'index']) -> middleware(['auth', 'admin', 'prevent-back-history', 'redirect-if-logged-out','check-session'])->name('adminDashboard');
 
-Route::middleware(['auth', 'verified', 'prevent-back-history', 'redirect-if-logged-out','check-session'])->group(function(){
+Route::middleware(['auth', 'verified', 'prevent-back-history', 'redirect-if-logged-out','check-session', 'admin'])->group(function(){
     Route::get('/add/book', [BookController::class, 'addBook'])->name('addBook');
     Route::post('/store/book', [BookController::class, 'storeBook'])->name('storeBook');
     Route::get('/edit/book/{id}', [BookController::class, 'editBook'])->name('editBook');
