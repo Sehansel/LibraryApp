@@ -120,6 +120,7 @@
                             <div class="card-body">
                             <h5 class="card-title" style="color: white">{{$publisher->publisherName}}</h5>
                             <a href="{{route('publisherDetail', ['id'=>Crypt::encrypt($publisher->id)])}}" class="btn">Detail</a>
+                            @can('admin')
                             <div>
                                 <a href="{{route('editPublisher', ['id'=>Crypt::encrypt($publisher->id)])}}" class="btnU">Update</a>
                                 <form action="{{route('deletePublisher', ['id'=>Crypt::encrypt($publisher->id)])}}" method="POST">
@@ -128,6 +129,7 @@
                                     <button class="btnD">Delete</a>
                                 </form>
                             </div>
+                            @endcan
                             </div>
                         </div>
                     @endforeach

@@ -6,6 +6,7 @@ use App\Models\Publisher;
 use App\Models\Book;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Crypt;
 
 class PublisherController extends Controller

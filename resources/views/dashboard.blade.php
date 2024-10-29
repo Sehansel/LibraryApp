@@ -121,6 +121,7 @@
                             <h5 class="card-title" style="color: white">{{$book->bookTitle}}</h5>
                             <p class="card-text" style="color: white">{{$book->author}}</p>
                             <a href="{{route('bookDetail', ['id'=>Crypt::encrypt($book->id)])}}" class="btn">Detail</a>
+                            @can('admin')
                             <div>
                                 <a href="{{route('editBook', ['id'=>Crypt::encrypt($book->id)])}}" class="btnU">Update</a>
                                 <form action="{{route('deleteBook', ['id'=>Crypt::encrypt($book->id)])}}" method="POST">
@@ -129,6 +130,7 @@
                                     <button class="btnD">Delete</a>
                                 </form>
                             </div>
+                            @endcan
                             </div>
                         </div>
                     @endforeach
