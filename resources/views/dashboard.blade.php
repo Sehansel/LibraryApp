@@ -131,6 +131,7 @@
                                 </form>
                             </div>
                             @endcan
+
                             </div>
                         </div>
                     @endforeach

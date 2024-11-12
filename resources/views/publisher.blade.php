@@ -129,7 +129,7 @@
                                     <button class="btnD">Delete</a>
                                 </form>
                             </div>
-                            @endcan
+			    @endcan
                             </div>
                         </div>
                     @endforeach

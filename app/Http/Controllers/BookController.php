@@ -24,9 +24,12 @@ class BookController extends Controller
     }
 
     public function storeBook(Request $request){
-        if(!Gate::allows('admin')){
+	if(!$request->isMethod('post')){
+		return redirect('/dashboard');
+	}
+	if(!Gate::allows('admin')){
             abort(403);
-        }
+	}
         $validateData = $request->validate([
             'bookTitle' => 'required|string|max:255',
             'publisher' => 'required|integer',
@@ -137,7 +140,10 @@ class BookController extends Controller
     }
 
     public function updateBook($id, Request $request){
-        if(!Gate::allows('admin')){
+	if(!$request->isMethod('patch')){
+                return redirect('/dashboard');
+        }    
+	if(!Gate::allows('admin')){
             abort(403);
         }
         try {
@@ -169,7 +175,10 @@ class BookController extends Controller
     }
 
     public function deleteBook($id){
-        if(!Gate::allows('admin')){
+	if(!$request->isMethod('delete')){
+                return redirect('/dashboard');
+        }    
+	if(!Gate::allows('admin')){
             abort(403);
         }
         try {

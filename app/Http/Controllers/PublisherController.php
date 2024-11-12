@@ -20,6 +20,9 @@ class PublisherController extends Controller
     }
 
     public function storePublisher(Request $request){
+	if(!$request->isMethod('post')){
+                return redirect('/dashboard');
+        }
         if(!Gate::allows('admin')){
             abort(403);
         }
@@ -68,7 +71,10 @@ class PublisherController extends Controller
     }
 
     public function updatePublisher($id, Request $request){
-        if(!Gate::allows('admin')){
+	if(!$request->isMethod('patch')){
+                return redirect('/dashboard');
+        }    
+	if(!Gate::allows('admin')){
             abort(403);
         }
         try {
@@ -89,7 +95,10 @@ class PublisherController extends Controller
     }
 
     public function deletePublisher($id){
-        if(!Gate::allows('admin')){
+	if(!$request->isMethod('delete')){
+                return redirect('/dashboard');
+        }    
+	if(!Gate::allows('admin')){
             abort(403);
         }
         try {
