@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Crypt;
 
 class ProfileController extends Controller
 {
@@ -84,24 +85,32 @@ class ProfileController extends Controller
     /**
      * Serve the user's profile photo.
      */
-    public function showProfilePhoto(User $user)
+    public function showProfilePhoto($encryptedId)
     {
-        if ($user->image) {
-            $path = $user->image;
-
-            if (Storage::exists($path)) {
-                return response()->file(storage_path("app/{$path}"));
+        try {
+            $userId = Crypt::decrypt($encryptedId);
+            
+            $user = User::findOrFail($userId);
+    
+            if ($user->image && Storage::exists($user->image)) {
+                return response()->file(storage_path("app/private/{$user->image}"));
             }
+            
+            return response()->file(public_path('default.jpg'));
+        } catch (\Exception $e) {
+            abort(404);
         }
-
-        return response()->file(public_path('default.jpg'));
     }
 
     /**
      * Delete the user's account.
      */
     public function destroy(Request $request): RedirectResponse
-    {
+    {   
+        $request->validate([
+            'password' => 'required|string|min:8',
+        ]);
+
         $request->validateWithBag('userDeletion', [
             'password' => ['required', 'current_password'],
         ]);
