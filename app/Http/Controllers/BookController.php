@@ -73,7 +73,7 @@ class BookController extends Controller
             $book = Book::findOrFail($decrypt);
 
             return view('bookDetail')->with('book', $book);
-        } catch (Illuminate\Contracts\Encryption\DecryptException $e) {
+        } catch (\Exception $e) {
             return redirect('/dashboard');
         }
     }
@@ -95,7 +95,7 @@ class BookController extends Controller
                 return redirect('/dashboard')->with('success', 'Book purchased successfully');
             }
             return redirect('/dashboard')->with('error', 'Book not found or out of stock');
-        } catch (Illuminate\Contracts\Encryption\DecryptException $e) {
+        } catch (\Exception $e) {
             return redirect('/dashboard');
         }
     }
@@ -117,7 +117,7 @@ class BookController extends Controller
             $book = Book::findOrFail($decrypt);
 
             return view('userBookDetail')->with('book', $book);
-        } catch (Illuminate\Contracts\Encryption\DecryptException $e) {
+        } catch (\Exception $e) {
             return redirect('/dashboard');
         }
     }
@@ -134,7 +134,7 @@ class BookController extends Controller
             $publisher = Publisher::all();
 
             return view('updateBook', ['publisher' => $publisher, 'book' => $book]);
-        } catch (Illuminate\Contracts\Encryption\DecryptException $e) {
+        } catch (\Exception $e) {
             return redirect('/dashboard');
         }
     }
@@ -168,16 +168,13 @@ class BookController extends Controller
             ]);
 
         return redirect('/dashboard');
-        } catch (Illuminate\Contracts\Encryption\DecryptException $e) {
+        } catch (\Exception $e) {
             return redirect('/dashboard');
         }
 
     }
 
-    public function deleteBook($id){
-	if(!$request->isMethod('delete')){
-                return redirect('/dashboard');
-        }    
+    public function deleteBook($id){   
 	if(!Gate::allows('admin')){
             abort(403);
         }
@@ -186,7 +183,7 @@ class BookController extends Controller
             Book::destroy($decrypt);
 
             return redirect('/dashboard');
-        } catch (Illuminate\Contracts\Encryption\DecryptException $e) {
+        } catch (\Exception $e) {
             return redirect('/dashboard');
         }
 

@@ -50,7 +50,7 @@ class PublisherController extends Controller
             $publisher = Publisher::findOrFail($decrypt);
 
             return view('publisherDetail')->with('publisher', $publisher);
-        } catch (Illuminate\Contracts\Encryption\DecryptException $e) {
+        } catch (\Exception $e) {
             return redirect('/dashboard');
         }
     }
@@ -65,7 +65,7 @@ class PublisherController extends Controller
             $publisher = Publisher::findOrFail($decrypt);
 
             return view('updatePublisher')->with('publisher', $publisher);
-        } catch (Illuminate\Contracts\Encryption\DecryptException $e) {
+        } catch (\Exception $e) {
             return redirect('/dashboard');  
         }
     }
@@ -89,15 +89,12 @@ class PublisherController extends Controller
             ]);
     
             return redirect(route('allPublisher'));
-        } catch (Illuminate\Contracts\Encryption\DecryptException $e) {
+        } catch (\Exception $e) {
             return redirect('/dashboard');
         }
     }
 
-    public function deletePublisher($id){
-	if(!$request->isMethod('delete')){
-                return redirect('/dashboard');
-        }    
+    public function deletePublisher($id){  
 	if(!Gate::allows('admin')){
             abort(403);
         }
@@ -107,7 +104,7 @@ class PublisherController extends Controller
             Publisher::destroy($decrypt);
 
             return redirect(route('allPublisher'));
-        } catch (Illuminate\Contracts\Encryption\DecryptException $e) {
+        } catch (\Exception $e) {
             return redirect('/dashboard');
         }
         

@@ -73,7 +73,6 @@ class ProfileController extends Controller
     
                 return redirect()->route('profile.edit')->with('success', 'profile-updated');
             } catch (\Exception $e) {
-                Log::error($e->getMessage());
     
                 return redirect()->route('profile.edit')->with('error', 'Failed to update profile picture. Please try again.');
             }
