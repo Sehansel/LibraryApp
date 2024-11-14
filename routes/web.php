@@ -10,7 +10,7 @@ Route::get('/', function () {
     return redirect()->route('register');
 });
 
-Route::middleware(['auth', 'verified', 'check-session'])->group(function () {
+Route::middleware(['auth', 'verified', 'check-session', 'csp-header'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::patch('/profile-photo', [ProfileController::class, 'pictureUpdate'])->name('photo.update');
@@ -20,7 +20,7 @@ Route::middleware(['auth', 'verified', 'check-session'])->group(function () {
 
 require __DIR__.'/auth.php';
 
-Route::middleware(['auth', 'verified', 'prevent-back-history', 'redirect-if-logged-out','check-session'])->group(function(){
+Route::middleware(['auth', 'verified', 'prevent-back-history', 'redirect-if-logged-out','check-session', 'csp-header'])->group(function(){
     Route::get('/dashboard', [BookController::class, 'dashboard'])->name('dashboard');
     Route::get('/book/{id}', [BookController::class, 'book'])->name('bookDetail');
     Route::post('/buy/book', [BookController::class, 'buyBook'])->name('buyBook');
@@ -30,9 +30,7 @@ Route::middleware(['auth', 'verified', 'prevent-back-history', 'redirect-if-logg
     Route::get('/publisher/{id}', [PublisherController::class, 'detailPublisher'])->name('publisherDetail');
 });
 
-Route::get('admin/dashboard', [HomeController::class, 'index']) -> middleware(['auth', 'admin', 'prevent-back-history', 'redirect-if-logged-out','check-session'])->name('adminDashboard');
-
-Route::middleware(['auth', 'verified', 'prevent-back-history', 'redirect-if-logged-out','check-session', 'admin'])->group(function(){
+Route::middleware(['auth', 'verified', 'prevent-back-history', 'redirect-if-logged-out','check-session', 'admin', 'csp-header'])->group(function(){
     Route::get('/add/book', [BookController::class, 'addBook'])->name('addBook');
     Route::post('/store/book', [BookController::class, 'storeBook'])->name('storeBook');
     Route::get('/edit/book/{id}', [BookController::class, 'editBook'])->name('editBook');

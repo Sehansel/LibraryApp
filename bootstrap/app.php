@@ -18,6 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'prevent-back-history' => \App\Http\Middleware\PreventBackHistory::class,
             'redirect-if-logged-out' => \App\Http\Middleware\RedirectIfLoggedOut::class,
             'check-session' => \App\Http\Middleware\CheckSession::class,
+            'csp-header' => \App\Http\Middleware\ContentSecurityPolicy::class,
 
         ]);
     })
